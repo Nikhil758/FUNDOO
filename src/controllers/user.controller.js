@@ -1,5 +1,7 @@
 import HttpStatus from 'http-status-codes';
 import * as UserService from '../services/user.service';
+var jwt = require("jsonwebtoken")
+
 
 // /**
 //  * Controller to get all users available
@@ -45,16 +47,18 @@ import * as UserService from '../services/user.service';
  * @param {object} res - response object
  * @param {Function} next
  */
-export const newUser = async (req, res, next) => {
+export const newUserRegister = async (req, res, next) => {
   try {
-    const data = await UserService.newUser(req.body);
-    const{FirstName,LastName,Email}=data;
+    const data = await UserService.newUserRegister(req.body);
+    const token = jwt.sign({data},"SK",{expiresIn:'500s'});
+    const{first_name,last_name,email}=data;
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
       data: {
-        FirstName,
-        LastName,
-        Email
+        first_name,
+        last_name,
+        email,
+        token
       },
       message: 'User created successfully'
     });
@@ -66,13 +70,13 @@ export const newUser = async (req, res, next) => {
 export const userLogin = async (req,res,next) => {
   try{
     const data = await UserService.userLogin(req.body);
-    const{FirstName,LastName,Email}=data;
+    const{first_name,last_name,email}=data;
     res.status(HttpStatus.OK).json({
       code:HttpStatus.OK,
       data:{
-        FirstName,
-        LastName,
-        Email
+        first_name,
+        last_name,
+        email
       },
       message:'User Found in our dataBase'
     });
