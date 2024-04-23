@@ -34,6 +34,7 @@ export const userLogin = async(body)=>{
     throw new Error("Incorrect Password")
   }
 };
+
 // //update single user
 // export const updateUser = async (_id, body) => {
 //   const data = await User.findByIdAndUpdate(

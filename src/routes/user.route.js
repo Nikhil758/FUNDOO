@@ -1,7 +1,7 @@
 import express from 'express';
 import * as userController from '../controllers/user.controller';
 import { newUserValidator } from '../validators/user.validator';
-import { userAuth } from '../middlewares/auth.middleware';
+import * as userVerify from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
@@ -12,6 +12,8 @@ const router = express.Router();
 router.post('', newUserValidator, userController.newUserRegister);
 
 router.post('/login',userController.userLogin);
+
+router.post('/verify',userVerify.userAuth);
 
 // //route to get a single user by their user id
 // router.get('/:_id', userController.getUser);

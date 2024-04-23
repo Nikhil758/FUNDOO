@@ -1,6 +1,6 @@
 import HttpStatus from 'http-status-codes';
 import * as UserService from '../services/user.service';
-var jwt = require("jsonwebtoken")
+import jwt from 'jsonwebtoken';
 
 
 // /**
@@ -68,7 +68,7 @@ export const newUserRegister = async (req, res, next) => {
 export const userLogin = async (req,res,next) => {
   try{
     const data = await UserService.userLogin(req.body);
-    const token = jwt.sign({data},process.env.SECRETKEY,{expiresIn:'500s'});
+    const token = jwt.sign({id:data._id,email:data.email},process.env.SECRETKEY,{expiresIn:'2h'});
     const{first_name,last_name,email}=data;
     res.status(HttpStatus.OK).json({
       code:HttpStatus.OK,
@@ -87,7 +87,6 @@ export const userLogin = async (req,res,next) => {
     });
   }
 };
-
 // /**
 //  * Controller to update a user
 //  * @param  {object} req - request object
