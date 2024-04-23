@@ -1,7 +1,6 @@
 import User from '../models/user.model';
 import bcrypt from 'bcrypt'
 
-
 // //get all users
 // export const getAllUsers = async () => {
 //   const data = await User.find();

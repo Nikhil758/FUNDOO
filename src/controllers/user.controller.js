@@ -50,15 +50,13 @@ var jwt = require("jsonwebtoken")
 export const newUserRegister = async (req, res, next) => {
   try {
     const data = await UserService.newUserRegister(req.body);
-    const token = jwt.sign({data},"SK",{expiresIn:'500s'});
     const{first_name,last_name,email}=data;
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
       data: {
         first_name,
         last_name,
-        email,
-        token
+        email
       },
       message: 'User created successfully'
     });
@@ -70,13 +68,15 @@ export const newUserRegister = async (req, res, next) => {
 export const userLogin = async (req,res,next) => {
   try{
     const data = await UserService.userLogin(req.body);
+    const token = jwt.sign({data},process.env.SECRETKEY,{expiresIn:'500s'});
     const{first_name,last_name,email}=data;
     res.status(HttpStatus.OK).json({
       code:HttpStatus.OK,
       data:{
         first_name,
         last_name,
-        email
+        email,
+        token
       },
       message:'User Found in our dataBase'
     });
