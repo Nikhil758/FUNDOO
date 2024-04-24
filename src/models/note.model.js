@@ -1,21 +1,20 @@
 import { Schema, model } from 'mongoose';
 
-const userSchema = new Schema(
+const noteSchema = new Schema(
   {
-    first_name: {
+    titleDescription: {
       type: String
     },
-    last_name: {
+    color: {
       type: String
     },
-    email: {
+    isArchive: {
       type: String,
-      unique: true
     },
-    password: {
+    isTrash: {
       type: String
     },
-    confirm_password: {
+    ccreatedBy: {
       type: String
     }
   },
@@ -23,5 +22,4 @@ const userSchema = new Schema(
     timestamps: true
   }
 );
-
-export default model('User', userSchema);
+export default model('Note', noteSchema);
