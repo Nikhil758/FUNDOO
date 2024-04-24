@@ -14,7 +14,7 @@ const noteSchema = new Schema(
     isTrash: {
       type: String
     },
-    ccreatedBy: {
+    createdBy: {
       type: String
     }
   },
