@@ -12,13 +12,9 @@ import jwt from 'jsonwebtoken';
 export const getAllUsers = async (req, res, next) => {
   try {
     const data = await UserService.getAllUsers();
-    const {first_name,email}=data;
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
-      data: {
-        first_name,
-        email
-      },
+      data: data,
       message: 'All users fetched successfully'
     });
   } catch (error) {
