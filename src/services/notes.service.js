@@ -6,6 +6,12 @@ export const newNoteCreate = async (body) => {
     return data;
   };
 
+//Get all notes
+export const getAllNotes = async (createdBy) => {
+    const data = await Note.find({createdBy},{title: 1});
+    return data;
+  };
+
  //update single note
 export const updateNote = async (_id, body) => {
   const data = await Note.findByIdAndUpdate(
