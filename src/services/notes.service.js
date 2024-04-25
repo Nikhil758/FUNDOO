@@ -7,8 +7,30 @@ export const newNoteCreate = async (body) => {
   };
 
 //Get all notes
-export const getAllNotes = async (createdBy) => {
-    const data = await Note.find({createdBy},{title: 1});
+export const getAllNotes = async (id) => {
+    const data = await Note.find({id},{title: 1});
+    return data;
+  };
+
+// Get note by id
+export const getNoteById = async (_id) => {
+    const data = await Note.findOne({_id},{title: 1, description: 1});
+    return data;
+  };
+
+//isArchive
+export const archive = async (_id) => {
+    const d = await Note.findById({_id},{title: 1, isArchive: 1});
+    d.isArchive=!d.isArchive;
+    const data = await d.save();
+    return data;
+  };
+
+  //isTrash
+  export const trash = async (_id) => {
+    const d = await Note.findById({_id},{title: 1, isTrash: 1});
+    d.isTrash=!d.isTrash;
+    const data = await d.save();
     return data;
   };
 

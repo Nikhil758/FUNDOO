@@ -1,5 +1,6 @@
 import User from '../models/user.model';
 import bcrypt from 'bcrypt'
+import { createToken } from '../utils/user.util';
 
 //create new user
 export const newUserRegister = async (body) => {
@@ -9,7 +10,6 @@ export const newUserRegister = async (body) => {
     throw new Error('Email already exist')
   }
   body.password = await bcrypt.hash(body.password,10);
-  body.confirm_password = await bcrypt.hash(body.confirm_password,10);
   const data = await User.create(body);
   return data;
 };
@@ -20,11 +20,34 @@ export const userLogin = async(body)=>{
   if(userObj===null){
     throw new Error('Incorrect Email')
   }
-  
   const isMatch = await bcrypt.compare(body.password,userObj.password);
   if (isMatch){
-    return userObj;
+    const token = createToken(userObj)
+    return token;
   }else{
     throw new Error("Incorrect Password")
   }
+}; 
+
+//Reset Password
+export const resetPassword = async(_id,body)=>{
+  let userObj = await User.findOne({email:body.email})
+  if(userObj===null){
+    throw new Error('User does not exist')
+  }
+  const isMatch = await bcrypt.compare(body.password,userObj.password);
+  if (isMatch){
+    throw new Error('Change the password')
+  }
+  body.password = await bcrypt.hash(body.password,10);
+  const data = await User.findByIdAndUpdate(
+    {
+      _id
+    },
+    body,
+    {
+      new: true
+    }
+  );
+  return data;
 }; 
