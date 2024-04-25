@@ -37,10 +37,73 @@ export const newNoteCreate = async (req, res, next) => {
  */
 export const getAllNotes = async (req, res, next) => {
   try {
-    const data = await NoteService.getAllNotes(req.params.createdBy);
+    const data = await NoteService.getAllNotes(res.locals.user.id);
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Notes fetched successfully',
+      data: {
+        data
+      }        
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Controller to create a new note
+ * @param  {object} req - request object
+ * @param {object} res - response object
+ * @param {Function} next
+ */
+export const getNoteById = async (req, res, next) => {
+  try {
+    const data = await NoteService.getNoteById(req.params._id);
+    res.status(HttpStatus.CREATED).json({
+      success: true,
+      message: 'Note fetched successfully',
+      data: {
+        data
+      }        
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Controller to toggle isArchive
+ * @param  {object} req - request object
+ * @param {object} res - response object
+ * @param {Function} next
+ */
+export const archive = async (req, res, next) => {
+  try {
+    const data = await NoteService.archive(req.params._id);
+    res.status(HttpStatus.CREATED).json({
+      success: true,
+      message: 'Toggled isArchive successfully',
+      data: {
+        data
+      }        
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Controller to toggle isTrash
+ * @param  {object} req - request object
+ * @param {object} res - response object
+ * @param {Function} next
+ */
+export const trash = async (req, res, next) => {
+  try {
+    const data = await NoteService.trash(req.params._id);
+    res.status(HttpStatus.CREATED).json({
+      success: true,
+      message: 'Toggled isTrash successfully',
       data: {
         data
       }        

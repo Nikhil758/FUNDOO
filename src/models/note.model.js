@@ -12,11 +12,11 @@ const noteSchema = new Schema(
       type: String
     },
     isArchive: {
-      type: String,
+      type: Boolean,
       default: false
     },
     isTrash: {
-      type: String,
+      type: Boolean,
       default: false
     },
     createdBy: {
