@@ -20,17 +20,17 @@ export const userAuth = async (req, res, next) => {
     bearerToken = bearerToken.split(' ')[1];
 
     const user  = await jwt.verify(bearerToken, process.env.SECRETKEY);
-    const{id,email}=user;
+    // const{id,email}=user;
 
-    res.status(HttpStatus.OK).json({
-      code:HttpStatus.OK,
-      data:{
-        id,
-        email
-      },
-      message:'User Authenticated'
-    });
-    // res.locals.user = user;
+    // res.status(HttpStatus.OK).json({
+    //   code:HttpStatus.OK,
+    //   data:{
+    //     id,
+    //     email
+    //   },
+    //   message:'User Authenticated'
+    // });
+    res.locals.user = user;
     // res.locals.token = bearerToken;
     next();
   } catch (error) {

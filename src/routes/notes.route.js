@@ -1,9 +1,16 @@
 import express from 'express';
 import * as notesController from '../controllers/notes.controller';
 import { newNotesValidator } from '../validators/note.validator';
+import { userAuth } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
-router.post('', newNotesValidator, notesController.newNoteCreate);
+router.post('', userAuth, newNotesValidator, notesController.newNoteCreate);
+
+router.get('/:createdBy',userAuth,notesController.getAllNotes);
+
+router.put('/:_id', userAuth, notesController.updateNote);
+
+router.delete('/:_id', userAuth, notesController.deleteNote);
 
 export default router;
