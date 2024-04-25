@@ -29,6 +29,27 @@ export const newNoteCreate = async (req, res, next) => {
     }
   };
 
+/**
+ * Controller to create a new note
+ * @param  {object} req - request object
+ * @param {object} res - response object
+ * @param {Function} next
+ */
+export const getAllNotes = async (req, res, next) => {
+  try {
+    const data = await NoteService.getAllNotes(req.params.createdBy);
+    res.status(HttpStatus.CREATED).json({
+      success: true,
+      message: 'Notes fetched successfully',
+      data: {
+        data
+      }        
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
   /**
  * Controller to update a note
  * @param  {object} req - request object

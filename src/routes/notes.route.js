@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post('', userAuth, newNotesValidator, notesController.newNoteCreate);
 
+router.get('/:createdBy',userAuth,notesController.getAllNotes);
+
 router.put('/:_id', userAuth, notesController.updateNote);
 
 router.delete('/:_id', userAuth, notesController.deleteNote);
