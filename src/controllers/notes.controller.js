@@ -2,7 +2,7 @@ import HttpStatus from 'http-status-codes';
 import * as NoteService from '../services/notes.service';
 
 /**
- * Controller to create a new user
+ * Controller to create a new note
  * @param  {object} req - request object
  * @param {object} res - response object
  * @param {Function} next
@@ -10,16 +10,67 @@ import * as NoteService from '../services/notes.service';
 export const newNoteCreate = async (req, res, next) => {
     try {
       const data = await NoteService.newNoteCreate(req.body);
-      const{titleDescription,createdBy}=data;
+      const{_id,title,createdBy}=data;
+      const user_id=res.locals.user.id;
       res.status(HttpStatus.CREATED).json({
-        code: HttpStatus.CREATED,
+        success: true,
+        message: 'Note created successfully',
         data: {
-            titleDescription,
-            createdBy
-        },
-        message: 'Note created successfully'
+          user_id,
+          _id,
+          title,
+          createdBy,
+        }        
       });
     } catch (error) {
       next(error);
     }
   };
+
+  /**
+ * Controller to update a note
+ * @param  {object} req - request object
+ * @param {object} res - response object
+ * @param {Function} next
+ */
+export const updateNote = async (req, res, next) => {
+  try {
+    const data = await NoteService.updateNote(req.params._id, req.body);
+    const {_id,title,createdBy}=data;
+    const user_id=res.locals.user.id;
+    res.status(HttpStatus.ACCEPTED).json({
+      success: true,
+      message: 'Note updated successfully',
+      data:{
+        user_id,
+        _id,
+        title,
+        createdBy,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Controller to delete a note
+ * @param  {object} req - request object
+ * @param {object} res - response object
+ * @param {Function} next
+ */
+export const deleteNote = async (req, res, next) => {
+  try {
+    await NoteService.deleteNote(req.params._id);
+    const user_id=res.locals.user.id;
+    res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Note deleted successfully',
+      data: [{
+        user_id
+      }]
+    });
+  } catch (error) {
+    next(error);
+  }
+};
