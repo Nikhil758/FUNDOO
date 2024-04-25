@@ -20,11 +20,12 @@ export const userAuth = async (req, res, next) => {
     bearerToken = bearerToken.split(' ')[1];
 
     const user  = await jwt.verify(bearerToken, process.env.SECRETKEY);
-    const{email}=user;
+    const{id,email}=user;
 
     res.status(HttpStatus.OK).json({
       code:HttpStatus.OK,
       data:{
+        id,
         email
       },
       message:'User Authenticated'
