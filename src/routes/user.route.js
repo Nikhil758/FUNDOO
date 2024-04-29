@@ -12,6 +12,8 @@ router.post('', newUserValidator, userController.newUserRegister);
 
 router.post('/login', userController.userLogin);
 
+router.put('/forget', userController.forgetPassword);
+
 router.put('/reset', resetPasswordValidator, userAuth, userController.resetPassword);
 
 // //route to get a single user by their user id
