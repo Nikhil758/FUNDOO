@@ -20,7 +20,7 @@ export const getNoteById = async (_id) => {
 
 //isArchive
 export const archive = async (_id) => {
-    const d = await Note.findById({_id},{title: 1, isArchive: 1});
+    const d = await Note.findById({_id},{title: 1, isArchive: 1, createdBy: 1});
     d.isArchive=!d.isArchive;
     const data = await d.save();
     return data;
@@ -28,7 +28,7 @@ export const archive = async (_id) => {
 
   //isTrash
   export const trash = async (_id) => {
-    const d = await Note.findById({_id},{title: 1, isTrash: 1});
+    const d = await Note.findById({_id},{title: 1, isTrash: 1, createdBy: 1});
     d.isTrash=!d.isTrash;
     const data = await d.save();
     return data;

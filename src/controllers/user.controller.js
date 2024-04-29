@@ -32,10 +32,25 @@ export const userLogin = async (req,res,next) => {
     res.status(HttpStatus.OK).json({
       success: true,
       message:'User Found in our dataBase',
-      data:{
-        data
-      }
+      data: data
     });
+  }catch(error){
+    res.status(HttpStatus.BAD_REQUEST).json({
+      code:HttpStatus.BAD_REQUEST,
+      message:`${error}`
+    });
+  }
+};
+
+export const forgetPassword = async(req,res,next) => {
+  try{
+    const data = await UserService.forgetPassword(req.body);
+    res.status(HttpStatus.OK).json({
+      success: true,
+      message:'Reset Password Link is sent',
+      data: data
+    });
+
   }catch(error){
     res.status(HttpStatus.BAD_REQUEST).json({
       code:HttpStatus.BAD_REQUEST,
@@ -46,7 +61,7 @@ export const userLogin = async (req,res,next) => {
 
 export const resetPassword = async (req,res,next) => {
   try{
-    const data = await UserService.resetPassword(res.locals.user._id,req.body);
+    const data = await UserService.resetPassword(res.locals.user._id,res.locals.user.email,req.body);
     const{_id,first_name,last_name,email}=data;
     res.status(HttpStatus.OK).json({
       success: true,

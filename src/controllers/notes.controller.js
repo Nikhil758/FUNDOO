@@ -83,9 +83,7 @@ export const archive = async (req, res, next) => {
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Toggled isArchive successfully',
-      data: {
-        data
-      }        
+      data: data       
     });
   } catch (error) {
     next(error);

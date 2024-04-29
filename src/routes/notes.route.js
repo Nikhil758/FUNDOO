@@ -7,16 +7,16 @@ const router = express.Router();
 
 router.get('', userAuth, notesController.getAllNotes);
 
-router.get('/:_id', userAuth, notesController.getNoteById);
-
 router.post('', userAuth, newNotesValidator, notesController.newNoteCreate);
 
-router.put('/archive/:_id', userAuth, notesController.archive )
-
-router.put('/trash/:_id', userAuth, notesController.trash )
+router.get('/:_id', userAuth, notesController.getNoteById);
 
 router.put('/:_id', userAuth, notesController.updateNote);
 
 router.delete('/:_id', userAuth, notesController.deleteNote);
+
+router.put('/:_id/archive', userAuth, notesController.archive )
+
+router.put('/:_id/trash', userAuth, notesController.trash )
 
 export default router;

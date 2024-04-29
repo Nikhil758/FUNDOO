@@ -1,6 +1,7 @@
 import User from '../models/user.model';
 import bcrypt from 'bcrypt'
-import { createToken } from '../utils/user.util';
+import jwt from 'jsonwebtoken'
+import sendEmail from '../utils/user.util';
 
 //create new user
 export const newUserRegister = async (body) => {
@@ -16,28 +17,45 @@ export const newUserRegister = async (body) => {
 
 //Login
 export const userLogin = async(body)=>{
-  let userObj = await User.findOne({email:body.email})
+  let userObj = await User.findOne({email: body.email})
   if(userObj===null){
     throw new Error('Incorrect Email')
   }
   const isMatch = await bcrypt.compare(body.password,userObj.password);
   if (isMatch){
-    const token = createToken(userObj)
+    const token = jwt.sign({_id: userObj._id,email: userObj.email},process.env.SECRETKEY,{expiresIn:'2h'});
     return token;
   }else{
     throw new Error("Incorrect Password")
   }
 }; 
 
+//Forget Password
+export const forgetPassword = async(body)=>{
+  let userObj = await User.findOne({email: body.email})
+  if(userObj===null){
+    throw new Error('User does not exist')
+  }
+  const token = jwt.sign({_id: userObj._id,email: userObj.email},process.env.SECRETKEY,{expiresIn:'2h'});
+  const Email = userObj.email; 
+  sendEmail({
+    subject: "Reset Password Sent",
+    text: "http://localhost:3000/api/users/forget",
+    to: Email,
+    from: process.env.EMAIL
+  });
+  return token;
+}; 
+
 //Reset Password
-export const resetPassword = async(_id,body)=>{
-  let userObj = await User.findOne({email:body.email})
+export const resetPassword = async(_id,email,body)=>{
+  let userObj = await User.findOne({email})
   if(userObj===null){
     throw new Error('User does not exist')
   }
   const isMatch = await bcrypt.compare(body.password,userObj.password);
   if (isMatch){
-    throw new Error('Change the password')
+    throw new Error('Password cannot be same as the old one')
   }
   body.password = await bcrypt.hash(body.password,10);
   const data = await User.findByIdAndUpdate(
