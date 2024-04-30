@@ -37,13 +37,11 @@ export const newNoteCreate = async (req, res, next) => {
  */
 export const getAllNotes = async (req, res, next) => {
   try {
-    const data = await NoteService.getAllNotes(res.locals.user.id);
+    const data = await NoteService.getAllNotes(res.locals.user.email);
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Notes fetched successfully',
-      data: {
-        data
-      }        
+      data: data      
     });
   } catch (error) {
     next(error);
@@ -62,9 +60,7 @@ export const getNoteById = async (req, res, next) => {
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Note fetched successfully',
-      data: {
-        data
-      }        
+      data: data       
     });
   } catch (error) {
     next(error);
@@ -102,9 +98,7 @@ export const trash = async (req, res, next) => {
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Toggled isTrash successfully',
-      data: {
-        data
-      }        
+      data: data        
     });
   } catch (error) {
     next(error);
@@ -152,10 +146,10 @@ export const deleteNote = async (req, res, next) => {
     res.status(HttpStatus.OK).json({
       success: true,
       message: 'Note deleted successfully',
-      data: [{
+      data:{
         user_id,
         user_mail
-      }]
+      }
     });
   } catch (error) {
     next(error);
