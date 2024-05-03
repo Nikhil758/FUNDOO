@@ -14,6 +14,8 @@ import {
 } from './middlewares/error.middleware';
 import logger from './config/logger';
 
+import swaggerUi from 'swagger-ui-express';
+import swagger from './swagger/swagger.json';
 
 const app = express();
 const host = process.env.APP_HOST;
@@ -27,13 +29,19 @@ app.use(express.json());
 
 database();
 
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swagger)
+);
+
 app.use(`/api`, routes());
 app.use(appErrorHandler);
 app.use(genericErrorHandler);
 app.use(notFound);
 
 app.listen(port, () => {
-  logger.info(`Server started at ${host}:${port}/api`);
+  logger.info(`Server started at ${host}:${port}/api-docs`);
 });
 
 export default app;

@@ -23,7 +23,7 @@ export const userLogin = async(body)=>{
   }
   const isMatch = await bcrypt.compare(body.password,userObj.password);
   if (isMatch){
-    const token = jwt.sign({_id: userObj._id,email: userObj.email},process.env.SECRETKEY,{expiresIn:'2h'});
+    const token = jwt.sign({_id: userObj._id,email: userObj.email},process.env.SECRETKEY,{expiresIn: '2h'});
     return token;
   }else{
     throw new Error("Incorrect Password")
@@ -36,7 +36,7 @@ export const forgetPassword = async(body)=>{
   if(userObj===null){
     throw new Error('User does not exist')
   }
-  const token = jwt.sign({_id: userObj._id,email: userObj.email},process.env.SecretKey,{expiresIn:'2h'});
+  const token = jwt.sign({_id: userObj._id,email: userObj.email},process.env.SecretKey,{expiresIn: '1h'});
   const Email = userObj.email; 
   sendEmail({
     subject: "Reset Password Sent",
