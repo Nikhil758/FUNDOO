@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import sendEmail from '../utils/user.util';
 
+
 //create new user
 export const newUserRegister = async (body) => {
   let res =await User.findOne({email:body.email})
@@ -38,13 +39,13 @@ export const forgetPassword = async(body)=>{
   }
   const token = jwt.sign({_id: userObj._id,email: userObj.email},process.env.SecretKey,{expiresIn: '1h'});
   const Email = userObj.email; 
-  sendEmail({
-    subject: "Reset Password Sent",
-    text: token,
-    to: Email,
-    from: process.env.EMAIL
-  });
-  return ;
+  // sendEmail({
+  //   subject: "Reset Password Sent",
+  //   text: token,
+  //   to: Email,
+  //   from: process.env.EMAIL
+  // });
+  return token;
 }; 
 
 //Reset Password

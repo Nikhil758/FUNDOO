@@ -44,10 +44,11 @@ export const userLogin = async (req,res,next) => {
 
 export const forgetPassword = async(req,res,next) => {
   try{
-    await UserService.forgetPassword(req.body);
+    const data = await UserService.forgetPassword(req.body);
     res.status(HttpStatus.OK).json({
       success: true,
-      message:'Reset Password Link is sent'
+      message:'Reset Password Link is sent',
+      data: data
     });
 
   }catch(error){
