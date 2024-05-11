@@ -6,8 +6,8 @@ import sendEmail from '../utils/user.util';
 
 //create new user
 export const newUserRegister = async (body) => {
+  body.email = await body.email.toLowerCase();
   let res =await User.findOne({email:body.email})
-  // console.log("Message",res);
   if(res!==null){
     throw new Error('Email already exist')
   }
