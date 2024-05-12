@@ -1,12 +1,10 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
 import app from '../../src/index';
 
-let resetToken,loginToken,userId,userMail;
+let resetToken, loginToken, userId, userMail;
 
 describe('User APIs Test', () => {
-
   beforeAll(async () => {
     const clearCollections = async () => {
       for (const collection in mongoose.connection.collections) {
@@ -15,7 +13,9 @@ describe('User APIs Test', () => {
     };
 
     const mongooseConnect = async () => {
-      await mongoose.connect(process.env.DATABASE_TEST, { useNewUrlParser: true});
+      await mongoose.connect(process.env.DATABASE_TEST, {
+        useNewUrlParser: true
+      });
       await clearCollections();
     };
 
@@ -23,20 +23,18 @@ describe('User APIs Test', () => {
       await mongooseConnect();
     } else {
       await clearCollections();
-    } 
+    }
   });
-  
+
   describe('New User', () => {
     it('Should return user object', async () => {
-      const res = await request(app)
-        .post('/api/users')
-        .send({
-          first_name: "Nick",
-          last_name: "N",
-          email: "Nick@gmail.com",
-          password: "Cham@234"
-        });
-        userId = res.body.data._id;
+      const res = await request(app).post('/api/users').send({
+        first_name: 'Nick',
+        last_name: 'N',
+        email: 'Nick@gmail.com',
+        password: 'Cham@234'
+      });
+      userId = res.body.data._id;
       expect(res.statusCode).toBe(201);
       expect(res.body.data).toBeInstanceOf(Object);
     });
@@ -44,53 +42,45 @@ describe('User APIs Test', () => {
 
   describe('New User', () => {
     it('Invalid password format', async () => {
-      const res = await request(app)
-        .post('/api/users')
-        .send({
-          first_name: "Nick",
-          last_name: "N",
-          email: "Nick@gmail.com",
-          password: "cham@234"
-        });
-        userId = res.body.data._id;
-        userMail = res.body.data.email;
+      const res = await request(app).post('/api/users').send({
+        first_name: 'Nick',
+        last_name: 'N',
+        email: 'Nick@gmail.com',
+        password: 'cham@234'
+      });
+      userId = res.body.data._id;
+      userMail = res.body.data.email;
       expect(res.statusCode).toBe(500);
     });
   });
 
   describe('Login User', () => {
     it('Should return token', async () => {
-      const res = await request(app)
-        .post('/api/users/login')
-        .send({
-          email: "Nick@gmail.com",
-          password: "Cham@234"
-        });
-        loginToken = res.body.data;
+      const res = await request(app).post('/api/users/login').send({
+        email: 'Nick@gmail.com',
+        password: 'Cham@234'
+      });
+      loginToken = res.body.data;
       expect(res.statusCode).toBe(200);
     });
   });
 
   describe('Login User', () => {
     it('Invalid User', async () => {
-      const res = await request(app)
-        .post('/api/users/login')
-        .send({
-          email: "nick@gmail.com",
-          password: "Cham@234"
-        });
+      const res = await request(app).post('/api/users/login').send({
+        email: 'nick@gmail.com',
+        password: 'Cham@234'
+      });
       expect(res.statusCode).toBe(400);
     });
   });
 
   describe('Forgot Password', () => {
     it('Should send reset mail', async () => {
-      const res = await request(app)
-        .post('/api/users/forget')
-        .send({
-          email: "Nick@gmail.com"
-        });
-        resetToken = res.body.data; 
+      const res = await request(app).post('/api/users/forget').send({
+        email: 'Nick@gmail.com'
+      });
+      resetToken = res.body.data;
       expect(res.statusCode).toBe(200);
     });
   });
@@ -99,7 +89,7 @@ describe('User APIs Test', () => {
       const res = await request(app)
         .put('/api/users/reset')
         .set('Authorization', `Bearer ${resetToken}`)
-        .send({ password: "Chammmm@234" });
+        .send({ password: 'Chammmm@234' });
 
       expect(res.statusCode).toBe(200);
     });
@@ -111,7 +101,7 @@ describe('Reset Password', () => {
     const res = await request(app)
       .put('/api/users/reset')
       .set('Authorization', `Bearer ${resetToken}`)
-      .send({ password: "chammmm@234" });
+      .send({ password: 'chammmm@234' });
 
     expect(res.statusCode).toBe(500);
   });
@@ -127,7 +117,9 @@ describe('Note APIs Test', () => {
     };
 
     const mongooseConnect = async () => {
-      await mongoose.connect(process.env.DATABASE_TEST, { useNewUrlParser: true});
+      await mongoose.connect(process.env.DATABASE_TEST, {
+        useNewUrlParser: true
+      });
       await clearCollections();
     };
 
@@ -135,9 +127,9 @@ describe('Note APIs Test', () => {
       await mongooseConnect();
     } else {
       await clearCollections();
-    } 
+    }
   });
-  
+
   describe('Fetch Notes', () => {
     it('Should return note objects', async () => {
       const res = await request(app)
@@ -153,8 +145,8 @@ describe('Note APIs Test', () => {
         .post('/api/notes')
         .set('Authorization', `Bearer ${loginToken}`)
         .send({
-          title: "ToDo",
-          description: "ToDO"
+          title: 'ToDo',
+          description: 'ToDO'
         });
 
       expect(res.statusCode).toBe(201);
@@ -168,8 +160,8 @@ describe('Note APIs Test', () => {
         .post('/api/notes')
         .set('Authorization', `Bearer ${loginToken}`)
         .send({
-          title: "To",
-          description: "ToDO"
+          title: 'To',
+          description: 'ToDO'
         });
 
       expect(res.statusCode).toBe(500);
@@ -182,8 +174,8 @@ describe('Note APIs Test', () => {
         .put(`/api/notes/${noteId}`)
         .set('Authorization', `Bearer ${loginToken}`)
         .send({
-          title: "TooDo",
-          description: "ToDO"
+          title: 'TooDo',
+          description: 'ToDO'
         });
 
       expect(res.statusCode).toBe(202);
@@ -196,7 +188,7 @@ describe('Note APIs Test', () => {
         .get(`/api/notes/${noteId}`)
         .set('Authorization', `Bearer ${loginToken}`);
 
-      expect(res.body.data.title).toEqual("TooDo");
+      expect(res.body.data.title).toEqual('TooDo');
     });
   });
 
@@ -223,7 +215,7 @@ describe('Note APIs Test', () => {
       const res = await request(app)
         .delete(`/api/notes/${noteId}`)
         .set('Authorization', `Bearer ${loginToken}`);
-        
+
       expect(res.statusCode).toBe(200);
       expect(res.body.data.user_id).toEqual(userId);
     });

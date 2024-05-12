@@ -5,7 +5,7 @@ export const newNotesValidator = (req, res, next) => {
     title: Joi.string().min(4).required(),
     description: Joi.string().min(4),
     color: Joi.string().min(2)
-    });
+  });
   const { error, value } = schema.validate(req.body);
   if (error) {
     next(error);
@@ -14,7 +14,5 @@ export const newNotesValidator = (req, res, next) => {
     next();
   }
 };
-
-
 
 //regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!#.])[A-Za-z\d$@$!%*?&.]{8,20}/)
