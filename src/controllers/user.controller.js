@@ -1,6 +1,7 @@
 import HttpStatus from 'http-status-codes';
 import * as UserService from '../services/user.service';
-import client from '../utils/redis';
+// import * as NoteService from '../services/notes.service';
+// import client from '../utils/redis';
 
 /**
  * Controller to create a new user
@@ -29,36 +30,15 @@ export const newUserRegister = async (req, res, next) => {
 
 export const userLogin = async (req, res) => {
   try {
-    const { email } = req.body;
-
-    // Check if user data exists in Redis cache
-    client.get(email, async (err, userData) => {
-      if (err) {
-        console.error('Redis error:', err);
-      }
-
-      if (userData) {
-        // User data found in Redis cache, return it
-        res.status(HttpStatus.OK).json({
-          success: true,
-          message: 'User found in cache',
-          data: JSON.parse(userData)
-        });
-      } else {
-        // User data not found in cache, fetch from database
         const data = await UserService.userLogin(req.body);
-
-        // Cache user data in Redis
-        client.set(email, 3600, JSON.stringify(data));
-
+        // const notes_data = await NoteService.getAllNotes(res.locals.user.email);
+        // client.set(`note:${res.locals.user._id}:${notes_data._id}`, JSON.stringify(notes_data));
         res.status(HttpStatus.OK).json({
           success: true,
           message: 'User found in database',
-          data
+          data: data
         });
-      }
-    });
-  } catch (error) {
+      }catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
       code: HttpStatus.BAD_REQUEST,
       message: `${error}`

@@ -1,6 +1,6 @@
 import HttpStatus from 'http-status-codes';
 import * as NoteService from '../services/notes.service';
-
+import client, { getAllNotesForUser } from '../utils/redis';
 /**
  * Controller to create a new note
  * @param  {object} req - request object
@@ -11,6 +11,7 @@ export const newNoteCreate = async (req, res, next) => {
   try {
     req.body.createdBy = res.locals.user.email;
     const data = await NoteService.newNoteCreate(req.body);
+    client.set(`note:${res.locals.user._id}:${data._id}`,data);
     const { _id, title } = data;
     const user_id = res.locals.user.id;
     const createdBy = res.locals.user.email;
@@ -37,12 +38,27 @@ export const newNoteCreate = async (req, res, next) => {
  */
 export const getAllNotes = async (req, res, next) => {
   try {
-    const data = await NoteService.getAllNotes(res.locals.user.email);
-    res.status(HttpStatus.CREATED).json({
-      success: true,
-      message: 'Notes fetched successfully',
-      data: data
-    });
+    const notes = await getAllNotesForUser(res.locals.user._id);
+      if (notes) {
+        // User data found in Redis cache, return it
+        res.status(HttpStatus.OK).json({
+          success: true,
+          message: 'Notes found in cache',
+          data: JSON.stringify(notes)
+        });
+      } else {
+        // Notes not found in cache, fetch from database
+        const data = await NoteService.getAllNotes(res.locals.user.email);
+
+        // Cache notes data in Redis
+        client.set(`note:${res.locals.user._id}:${data._id}`, JSON.stringify(data));
+
+        res.status(HttpStatus.OK).json({
+          success: true,
+          message: 'Notes found in database',
+          data: data
+        });
+      }
   } catch (error) {
     next(error);
   }
@@ -56,12 +72,22 @@ export const getAllNotes = async (req, res, next) => {
  */
 export const getNoteById = async (req, res, next) => {
   try {
+    const note = await client.get(`note:${res.locals.user._id}:${req.params._id}`);
+    if(note){
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: 'Note found in cache',
+        data: note
+      });
+    }else{
     const data = await NoteService.getNoteById(req.params._id);
+    client.set(`note:${res.locals.user._id}:${req.params._id}`,data);
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'Note fetched successfully',
       data: data
     });
+  }
   } catch (error) {
     next(error);
   }
@@ -113,7 +139,9 @@ export const trash = async (req, res, next) => {
  */
 export const updateNote = async (req, res, next) => {
   try {
+    await client.del(`note:${res.locals.user._id}:${req.params._id}`)
     const data = await NoteService.updateNote(req.params._id, req.body);
+    await client.set(`note:${res.locals.user._id}:${req.params._id}`,data);
     const { _id, title } = data;
     const user_id = res.locals.user.id;
     const createdBy = res.locals.user.email;
@@ -140,6 +168,7 @@ export const updateNote = async (req, res, next) => {
  */
 export const deleteNote = async (req, res, next) => {
   try {
+    await client.del(`note:${res.locals.user._id}:${req.params._id}`)
     await NoteService.deleteNote(req.params._id);
     const user_id = res.locals.user.id;
     const user_mail = res.locals.user.email;

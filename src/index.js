@@ -15,7 +15,7 @@ import {
 import logger from './config/logger';
 
 import swaggerUi from 'swagger-ui-express';
-import swagger from './swagger/swagger.json';
+import swagger from './swagger/swagger3.0.json';
 
 const app = express();
 const host = process.env.APP_HOST;

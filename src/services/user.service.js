@@ -28,6 +28,7 @@ export const userLogin = async (body) => {
       process.env.SECRETKEY,
       { expiresIn: '2h' }
     );
+    
     return token;
   } else {
     throw new Error('Incorrect Password');
