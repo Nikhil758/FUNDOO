@@ -1,6 +1,8 @@
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { setAllNotes } from '../utils/redis';
+import { getAllNotes } from './notes.service';
 // import sendEmail from '../utils/user.util';
 
 //create new user
@@ -28,7 +30,9 @@ export const userLogin = async (body) => {
       process.env.SECRETKEY,
       { expiresIn: '2h' }
     );
-    
+    const data = await getAllNotes(userObj._id);
+    await setAllNotes(userObj._id, data);
+
     return token;
   } else {
     throw new Error('Incorrect Password');
