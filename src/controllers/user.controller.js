@@ -1,5 +1,6 @@
 import HttpStatus from 'http-status-codes';
 import * as UserService from '../services/user.service';
+import { produceMessage } from '../kafka/producer';
 
 /**
  * Controller to create a new user
@@ -10,8 +11,8 @@ import * as UserService from '../services/user.service';
 export const newUserRegister = async (req, res, next) => {
   try {
     const data = await UserService.newUserRegister(req.body);
-    client.set(data.email, 3600, JSON.stringify(data));
     const { first_name, last_name, email } = data;
+    await produceMessage(req);
     res.status(HttpStatus.CREATED).json({
       success: true,
       message: 'User created successfully',

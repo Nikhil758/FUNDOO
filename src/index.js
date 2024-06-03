@@ -17,6 +17,8 @@ import logger from './config/logger';
 import swaggerUi from 'swagger-ui-express';
 import swagger from './swagger/swagger3.0.json';
 
+import init from './kafka/admin';
+
 const app = express();
 const host = process.env.APP_HOST;
 const port = process.env.APP_PORT;
@@ -27,6 +29,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 database();
+
+init().then(() => {
+  logger.info('KAFKA STARTED');
+});
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger));
 
